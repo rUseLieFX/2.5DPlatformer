@@ -64,9 +64,9 @@ public class CameraController_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timeTurned < timeToTurn)
+        if (timeTurned <= timeToTurn)
         {
-            transform.RotateAround(transform.position, dirToTurn, 90 * Time.deltaTime);
+            transform.RotateAround(transform.position, dirToTurn, 90 * Time.deltaTime / timeToTurn);
             timeTurned += Time.deltaTime;
             if (timeTurned > timeToTurn)
             {
