@@ -17,6 +17,11 @@ public class CameraController_Script : MonoBehaviour
         get { return cameraPoint; }
     }
 
+    public Transform GetCam
+    {
+        get { return cam; }
+    }
+
     public static CameraController_Script instance;
 
     /*
@@ -51,6 +56,11 @@ public class CameraController_Script : MonoBehaviour
         }
 
     }
+    public bool Blocked
+    {
+        get { return blocked; }
+        set { blocked = value; }
+    }
 
     private void Awake()
     {
@@ -59,6 +69,7 @@ public class CameraController_Script : MonoBehaviour
     private void Start()
     {
         blocked = false;
+        timeTurned = timeToTurn*2; //Azért, hogy ne gondolja azt a játék, hogy a pálya betöltésekor kell már fordulni.
     }
 
     // Update is called once per frame
