@@ -9,6 +9,7 @@ public class PlayerController_Script : MonoBehaviour
     public static PlayerController_Script instance;
 
     bool grounded;
+    bool blocked;
     Vector3 gravitationTowardsX = new Vector3(9.81f, 0, 0);
     Vector3 gravitationTowardsY = new Vector3(0, 9.81f, 0);
     Vector3 gravitationTowardsZ = new Vector3(0, 0, 9.81f);
@@ -24,12 +25,24 @@ public class PlayerController_Script : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         startPos = transform.position;
+        if (Camera_Startup_Animation_Script.instance != null)
+        {
+            blocked = true;
+            Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded;
+        }
+        else blocked = false;
+    }
+
+    void AnimationEnded()
+    {
+        blocked = false;
+        Debug.Log("vége");
     }
 
     void FixedUpdate()
     {
         Vector2 input = GetInput();
-        MovePlayer(input);
+        if (!blocked) MovePlayer(input);
     }
 
     void MovePlayer(Vector2 dirs)

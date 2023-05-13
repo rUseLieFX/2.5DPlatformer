@@ -68,14 +68,20 @@ public class CameraController_Script : MonoBehaviour
     }
     private void Start()
     {
-        blocked = false;
-        timeTurned = timeToTurn*2; //Azért, hogy ne gondolja azt a játék, hogy a pálya betöltésekor kell már fordulni.
-        Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded;
+        timeTurned = timeToTurn*2; //Azért, hogy ne gondolja azt a játék, hogy a pálya betöltésekor kell már fordulni. igen, olcso megoldás.
+
+        if (Camera_Startup_Animation_Script.instance != null)
+        {
+            Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded;
+            blocked = true;
+        }
+        else blocked = false;
     }
 
     void AnimationEnded()
     {
         Debug.Log("vége");
+        blocked = false;
     }
 
     // Update is called once per frame

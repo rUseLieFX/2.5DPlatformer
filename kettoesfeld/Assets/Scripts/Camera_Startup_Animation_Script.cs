@@ -6,21 +6,21 @@ using UnityEngine;
 public class Camera_Startup_Animation_Script : MonoBehaviour
 {
 
-    [SerializeField] bool hasAnimation;
+    //[SerializeField] bool hasAnimation;
 
-    [SerializeField] Transform playerCamera; 
-    [SerializeField] Transform animationPoint; //Tömb?
-    [SerializeField] float startingFov;
+    Transform playerCamera; 
+    float startingFov;
 
-    [SerializeField] Quaternion cameraDefaultRot;
-    [SerializeField] Quaternion animationStartRot;
+    Quaternion cameraDefaultRot;
+    Quaternion animationStartRot;
 
-    [SerializeField] Vector3 cameraDefaultPos;
-    [SerializeField] Vector3 animationStartPos;
+    Vector3 cameraDefaultPos;
+    Vector3 animationStartPos;
 
     [SerializeField] float animationTime;
     float animationTimeSpent;
     Camera cam;
+
     public static Camera_Startup_Animation_Script instance;
 
 
@@ -32,33 +32,22 @@ public class Camera_Startup_Animation_Script : MonoBehaviour
     {
 
         cam = GetComponent<Camera>();
+        playerCamera = CameraController_Script.instance.GetComponentInChildren<Camera>().transform;
 
+        //Kezdetleges értékek megszerzése.
 
-        if (hasAnimation)
-        {
+        cameraDefaultRot = playerCamera.rotation;
+        animationStartRot = transform.rotation;
+        startingFov = cam.fieldOfView;
 
-            //Kezdetleges értékek megszerzése.
+        cameraDefaultPos = playerCamera.position;
+        animationStartPos = transform.position;
 
-            cameraDefaultRot = playerCamera.rotation;
-            animationStartRot = animationPoint.rotation;
-            startingFov = cam.fieldOfView;
+        //Kezdetleges értékek használása.
 
-            cameraDefaultPos = playerCamera.position;
-            animationStartPos = animationPoint.position;
-
-
-
-            //Kezdetleges értékek használása.
-
-            transform.rotation = animationStartRot;
-            transform.position = animationStartPos;
-            animationTimeSpent = 0f;
-        }
-        else
-        {
-            Destroy(gameObject);
-            Destroy(animationPoint.gameObject);
-        }
+        transform.rotation = animationStartRot;
+        transform.position = animationStartPos;
+        animationTimeSpent = 0f;
     }
 
     public event System.Action onAnimationEnded;
@@ -68,24 +57,17 @@ public class Camera_Startup_Animation_Script : MonoBehaviour
 
     void Update()
     {
-        if (hasAnimation)
+        if (animationTimeSpent < animationTime)
         {
-            if (animationTimeSpent < animationTime)
-            {
-                transform.position = Vector3.Lerp(animationStartPos, cameraDefaultPos, animationTimeSpent / animationTime);
-                transform.rotation = Quaternion.Lerp(animationStartRot, cameraDefaultRot, animationTimeSpent / animationTime);
-                cam.fieldOfView = Mathf.Lerp(startingFov, 60, animationTimeSpent / animationTime);
-                animationTimeSpent += Time.deltaTime;
-            }
-
-            if (animationTimeSpent >= animationTime)
-            {
-                Destroy(gameObject);
-                Destroy(animationPoint.gameObject);
-                Debug.LogWarning("todo, meg kell csinálni a blokkolós dolgokat!"); //A kamerát meg a játékost ne lehessen mozgatni.
-                onAnimationEnded?.Invoke();
-            }
+            transform.position = Vector3.Lerp(animationStartPos, cameraDefaultPos, animationTimeSpent / animationTime);
+            transform.rotation = Quaternion.Lerp(animationStartRot, cameraDefaultRot, animationTimeSpent / animationTime);
+            cam.fieldOfView = Mathf.Lerp(startingFov, 60, animationTimeSpent / animationTime);
+            animationTimeSpent += Time.deltaTime;
         }
-
+        else 
+        {
+            Destroy(gameObject);
+            onAnimationEnded?.Invoke();
+        }
     }
 }
