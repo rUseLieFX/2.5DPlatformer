@@ -36,7 +36,6 @@ public class PlayerController_Script : MonoBehaviour
     void AnimationEnded()
     {
         blocked = false;
-        Debug.Log("vége");
     }
 
     void FixedUpdate()

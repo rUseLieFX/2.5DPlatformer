@@ -80,7 +80,6 @@ public class CameraController_Script : MonoBehaviour
 
     void AnimationEnded()
     {
-        Debug.Log("vége");
         blocked = false;
     }
 
