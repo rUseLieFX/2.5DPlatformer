@@ -2553,6 +2553,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 7967669694126909761, guid: 44800a23794fd8140b3634d55c18b6d9, type: 3}
+      propertyPath: episode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967669694126909761, guid: 44800a23794fd8140b3634d55c18b6d9, type: 3}
+      propertyPath: hanyadik
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967669694126909761, guid: 44800a23794fd8140b3634d55c18b6d9, type: 3}
       propertyPath: sceneToLoad
       value: e1_m2
       objectReference: {fileID: 0}
