@@ -10,7 +10,7 @@ public class CameraController_Script : MonoBehaviour
     [SerializeField] float timeToTurn;
     float timeTurned;
     [SerializeField] Vector3 dirToTurn;
-    bool blocked;
+    bool blocked; //Lehet-e forgatni a kamerát?
 
     public Transform CameraTransform
     {
@@ -68,11 +68,11 @@ public class CameraController_Script : MonoBehaviour
     }
     private void Start()
     {
-        timeTurned = timeToTurn*2; //Azért, hogy ne gondolja azt a játék, hogy a pálya betöltésekor kell már fordulni. igen, olcso megoldás.
+        timeTurned = timeToTurn*2; //Azért, hogy ne gondolja azt a játék, hogy a pálya betöltésekor kell már fordulni. igen, ezt illene kicsit átírni a jövõben.
 
-        if (Camera_Startup_Animation_Script.instance != null)
+        if (Camera_Startup_Animation_Script.instance != null) //Ha van overview kamera a pályán, akkor...
         {
-            Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded;
+            Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded; //Jelezzen, ha a cutscene véget ért.
             blocked = true;
         }
         else blocked = false;
@@ -83,7 +83,6 @@ public class CameraController_Script : MonoBehaviour
         blocked = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (timeTurned <= timeToTurn)
@@ -95,11 +94,7 @@ public class CameraController_Script : MonoBehaviour
                 float x = Mathf.Round((transform.rotation.eulerAngles / 90).x);
                 float y = Mathf.Round((transform.rotation.eulerAngles / 90).y);
                 float z = Mathf.Round((transform.rotation.eulerAngles / 90).z);
-                /*
-                if (Mathf.Abs(x) == 4) x = 0;
-                if (Mathf.Abs(y) == 4) y = 0;
-                if (Mathf.Abs(z) == 4) z = 0;
-                */
+
                 transform.rotation = Quaternion.Euler(x*90, y*90, z*90);
                 blocked = false;
                 Camera.main.orthographic = true;
@@ -108,70 +103,64 @@ public class CameraController_Script : MonoBehaviour
 #if (DEBUGG)
         Debug.DrawLine(cam.position, cam.position+cam.right*2, Color.red);
         Debug.DrawLine(cam.position, cam.position+cam.up*2, Color.green);
-        //Debug.Log($"{camera.right} ; {camera.up}");
 #endif
-        #region pukeemoji
+        //Ha lehet mozogni...
         if (!blocked)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                Turn(KeyCode.RightArrow);
-            }
-
+            //Akkor nézzük az inputot, és forgassuk a kamerát az alapján.
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                Turn(KeyCode.LeftArrow);
+                Turn(0);
             }
 
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                Turn(KeyCode.UpArrow);
+                Turn(1);
             }
 
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            else if(Input.GetKeyDown(KeyCode.UpArrow))
             {
-                Turn(KeyCode.DownArrow);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
+                Turn(2);
+            } 
+            
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                //Turn(KeyCode.Space);
+                Turn(3);
             }
         }
-        #endregion
 
     }
 
-    void Turn(KeyCode key) 
+    void Turn(int key) 
     {
         dirToTurn = Vector3.zero;
         switch (key)
         {
-            case KeyCode.LeftArrow:
+            case 0:
                 {
                     dirToTurn = -cam.right;
                     break;
                 }
-            case KeyCode.RightArrow:
+            case 2:
                 {
                     dirToTurn = cam.right;
                     break;
                 }
-            case KeyCode.UpArrow:
+            case 1:
                 {
                     dirToTurn = cam.up;
                     break;
                 }
-            case KeyCode.DownArrow:
+            case 3:
                 {
                     dirToTurn = -cam.up;
                     break;
                 }
         }
-        //cameraLerpEndRot = Quaternion.Euler(rot + cameraLerpEndRot.eulerAngles);
-        Camera.main.orthographic = false;
-        timeTurned = 0;
-        blocked = true;
+
+        Camera.main.orthographic = false; //Lehessen átlátni a mapot 3D-ben.
+        timeTurned = 0; //Állítsuk 0-ra azt, hogy mennyi ideje forog a kamera.
+        blocked = true; //Ne fogadjon el több inputot a kamerával kapcsolatban.
 
     }
 

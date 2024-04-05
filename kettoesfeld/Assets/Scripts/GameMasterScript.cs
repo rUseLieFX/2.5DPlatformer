@@ -19,9 +19,11 @@ public class GameMasterScript : MonoBehaviour
     private void Start()
     {
         PlayerController_Script.instance.ChangeGravity((int)startingGravityDir);
+
         startingRotation = CameraController_Script.instance.transform.rotation;
         List<GameObject> gameObjects = new List<GameObject>();
         
+        //Legyen lementve az összes gravity changer egy listába.
         foreach (var item in GameObject.FindObjectsOfType<GravityChangerEntityScript>())
         {
             gameObjects.Add(item.gameObject);
@@ -29,19 +31,16 @@ public class GameMasterScript : MonoBehaviour
         gravityChangerObjects = gameObjects.ToArray();
 
     }
-    private void Update()
-    {
-       
-    }
 
     public void MapReset()
     {
+
         PlayerController_Script.instance.ChangeGravity((int)startingGravityDir);
         CameraController_Script.instance.transform.rotation = startingRotation;
+        //Ha resetelõdik a map, akkor legyen aktiválva az összes gravity changer.
         foreach (var item in gravityChangerObjects)
         {
             item.gameObject.SetActive(true);
-            Debug.Log("poggers");
         }
 
     }

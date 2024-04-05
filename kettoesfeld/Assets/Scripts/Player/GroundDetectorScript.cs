@@ -5,11 +5,13 @@ using UnityEngine.Events;
 
 public class GroundDetectorScript : MonoBehaviour
 {
-    [SerializeField] Collider[] colliders = new Collider[10]; //Egyszerre 10 objektnél többel csak nem fog ütközni a groundcheck.
+    [SerializeField] Collider[] colliders = new Collider[16]; //Egyszerre 16 objektnél többel csak nem fog ütközni a groundcheck.
 
+    //Amiért ez kell, az az, hogy ha A objektrõl átmegyünk B objektre, ne tudjon ugrani a karakter.
     private void OnTriggerEnter(Collider other)
     {
         if (other.isTrigger) return;
+
         //Elkezdjük átpörgetni a colliders tömböt.
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -20,11 +22,13 @@ public class GroundDetectorScript : MonoBehaviour
                 break;
             }
         }
-        PlayerController_Script.instance.OnGround(true);
+        PlayerController_Script.instance.OnGround(true); //Mivel valamihez hozzáértünk ami nem trigger, emiatt biztos hogy a földön vagyunk.
     }
 
     private void OnTriggerExit(Collider other)
     {
+        //Ha elhagyjuk "A" objektet, de még "B" tart minket, ha csak azt vesszük figyelembe, hogy 'Elhagytam-e azt, amirõl eddig el tudtam ugrani?'
+        //akkor hamisan azt jelezné, hogy igen. Emiatt van tárolva, hogy kikkel ütközik aktívan a ground detector.
         int uresek = 0;
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -38,6 +42,7 @@ public class GroundDetectorScript : MonoBehaviour
 
         }
 
+        //Ha már semmivel sem érintkezünk, akkor lehessen ugrani.
         if (uresek == colliders.Length)
         {
             PlayerController_Script.instance.OnGround(false);

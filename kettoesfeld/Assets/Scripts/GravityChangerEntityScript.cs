@@ -5,7 +5,7 @@ using UnityEngine;
 public class GravityChangerEntityScript : MonoBehaviour
 {
     [SerializeField] bool getDeleted;
-    [SerializeField] PlayerController_Script.GravityDirection  gravityIndex;
+    [SerializeField] PlayerController_Script.GravityDirection gravityIndex;
     [SerializeField] Transform arrow;
 
     private void Start()

@@ -14,7 +14,7 @@ public class GoalScript : MonoBehaviour
 
     private void Start()
     {
-        string sceneName = SceneManager.GetActiveScene().name; //pl e1_m1
+        string sceneName = SceneManager.GetActiveScene().name; //Megnézzük a pálya nevét, ideális esetben pl e1_m1
         string[] split = sceneName.Split('_'); // ebbõl lesz "e1" és "m1"
         if (split.Length != 2) 
         {

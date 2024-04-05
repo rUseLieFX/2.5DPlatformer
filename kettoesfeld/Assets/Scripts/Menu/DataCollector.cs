@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+//Ez intézi a mentést, hogy melyik epizódban melyik pálya van megcsinálva.
 public class DataCollector : MonoBehaviour
 {
 
@@ -43,7 +44,7 @@ public class DataCollector : MonoBehaviour
     {
         bool changed = false;
         // Ha az adott episode-nál járó szám kisebb, mint a pálya száma, akkor ezt elõször csinálja.
-        // Ha eddig a 3-t a pályát csinálta meg, és ez a 4., akkor frissítsuk az adatot.
+        // Ha eddig csak a 3. pályát csinálta meg, és ez a 4., akkor frissítsuk az adatot.
         if (GameData.maps[(int)ep] < map)
         {
             GameData.maps[(int)ep] = map;

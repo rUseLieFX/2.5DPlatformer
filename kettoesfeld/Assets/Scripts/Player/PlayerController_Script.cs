@@ -25,8 +25,10 @@ public class PlayerController_Script : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         startPos = transform.position;
-        if (Camera_Startup_Animation_Script.instance != null)
+
+        if (Camera_Startup_Animation_Script.instance != null) //Ha van cutscene...
         {
+            //Legyen blokkolva a mozgás, és szóljon ha vége.
             blocked = true;
             Camera_Startup_Animation_Script.instance.onAnimationEnded += AnimationEnded;
         }
@@ -48,14 +50,15 @@ public class PlayerController_Script : MonoBehaviour
     {
         //A gravitáció iránya
         Vector3 gravityDir = Physics.gravity.normalized;
-        //A gravitáció iránya abszolút értékben
+
+        //A gravitáció iránya abszolút értékben | Melyik tengelyt használja a gravitáció.
         Vector3 absGravity = new Vector3(Mathf.Abs(Physics.gravity.x), Mathf.Abs(Physics.gravity.y), Mathf.Abs(Physics.gravity.z));
-        //A gravitációs tengelyen lévõ sebesség
+
+        //A gravitációs tengelyen lévõ sebesség (esés)
         float gravityAxisSpeed = Vector3.Scale(rb.velocity, gravityDir).magnitude;
 
-        if (gravityAxisSpeed > 30)
+        if (gravityAxisSpeed > 30) //Ha túl gyorsan zuhan a játékos...
         {
-            //Eventekkel még meglehetne csinálni, de eh.
             GameMasterScript.instance.MapReset();
             rb.position = startPos;
             rb.velocity = Vector3.zero;
@@ -64,7 +67,7 @@ public class PlayerController_Script : MonoBehaviour
         bool jump = false;
         Vector2 jumpDir = CameraController_Script.instance.JumpDimension;
 
-        //Ha {1,*} / {-1,*} inputot adjuk, és {1,0} / {-1,0} a jump dimenson, akkor arra van az ugrás, és akarunk ugrani.
+        //Ha {1,*} / {-1,*} inputot adjuk, és {1,0} / {-1,0} a jump dimension, akkor arra van az ugrás, és akarunk ugrani.
         if (dirs[0] == jumpDir[0] && jumpDir[0] != 0 && grounded)
         {
             jump = true;
@@ -81,7 +84,7 @@ public class PlayerController_Script : MonoBehaviour
             //Debug.LogWarning("Ugrás!");
         }
 
-        Vector3 dir = dirs[0]*CameraController_Script.instance.GetRight
+        Vector3 dir = dirs[0] * CameraController_Script.instance.GetRight
             + dirs[1] * CameraController_Script.instance.GetUp;
 
         Vector3 freeToMove = absGravity.normalized; //Azok a tengelyek, amiken szabadon mozoghat a játékos, tehát nem kell a gravitáció miatt félni.
@@ -94,10 +97,7 @@ public class PlayerController_Script : MonoBehaviour
 
         //Debug.Log($"Szabad tengelyek: {freeToMove}");
 
-
-        //Azok a tengelyek, amiken szabadon mozoghat a játékos, tehát nem kell a gravitáció miatt félni.
-        //Debug.Log($"Direction:{dir}");
-
+        //Mozgás iránya. 
         dir = Vector3.Scale(dir,freeToMove);
         //Debug.Log($"Direction after freeToMove: {dir}");
 
@@ -106,7 +106,7 @@ public class PlayerController_Script : MonoBehaviour
 
 
         //Speed control
-        Vector3 vel = Vector3.Scale(rb.velocity, freeToMove); //Csak azokan tengelyek sebességét nézzük, amelyeken mozoghatunk (nem gravitációs)
+        Vector3 vel = Vector3.Scale(rb.velocity, freeToMove); //Csak azok tengelyek sebességét nézzük, amelyeken mozoghatunk (nem gravitációs)
         if (vel.magnitude > maxSpeed) //Ha a velocity vektor hosszabb, mint a max megengedett sebesség...
         {
             Vector3 velUj = vel.normalized * maxSpeed; //Akkor capeljük le.
@@ -129,8 +129,8 @@ public class PlayerController_Script : MonoBehaviour
     /// <param name="index">A gravitáció ID-je.</param>
     public void ChangeGravity(int index)
     {
-        Quaternion cameraStartRot = CameraController_Script.instance.CameraTransform.rotation;
-        //Forgatás még kell!
+        Quaternion cameraStartRot = CameraController_Script.instance.CameraTransform.rotation; //Legyen lementve, hogy eredetileg hogy állt a kamera.
+        
         switch (index)
         {
             case 0:
@@ -162,6 +162,7 @@ public class PlayerController_Script : MonoBehaviour
                 break;
         }
 
+        //Mivel az egész player objekt forgatva van ilyenkor, a kamera is mozog. Ezt kell "resetelni".
         CameraController_Script.instance.CameraTransform.rotation = cameraStartRot;
     }
     public enum GravityDirection
@@ -178,7 +179,6 @@ public class PlayerController_Script : MonoBehaviour
     {
         grounded = hmmm;
     }
-    Vector3 eddigiGravitaciosRotation = Vector3.zero;
     Vector2 GetInput()
     {
         float vertical = 0;
