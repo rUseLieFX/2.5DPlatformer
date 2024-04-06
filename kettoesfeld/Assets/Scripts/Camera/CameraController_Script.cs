@@ -32,6 +32,9 @@ public class CameraController_Script : MonoBehaviour
     // {0,-1}   - lefele van az ugrás.
     // {1,1}    - lehetetlen.
     */
+    /// <summary>
+    /// Megadja azt az irányt relatív a kamerához, amerre az ugrásnak kell történnie.
+    /// </summary>
     public Vector2 JumpDimension {
         get {
             Vector3 grav = -Physics.gravity.normalized;

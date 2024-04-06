@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class GroundDetectorScript : MonoBehaviour
 {
     [SerializeField] Collider[] colliders = new Collider[16]; //Egyszerre 16 objektnél többel csak nem fog ütközni a groundcheck.
+    //Igen, ez nem a legszebb megoldás, dinamikusan jobb lenne, de jelenleg még soknak tartom, mivel úgy sem annyira komplikáltak a pályák.
 
     //Amiért ez kell, az az, hogy ha A objektrõl átmegyünk B objektre, ne tudjon ugrani a karakter.
     private void OnTriggerEnter(Collider other)
